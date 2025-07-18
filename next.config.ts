@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
-import { env } from "process";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: [env.REPLIT_DOMAINS.split(",")[0]],
+  // Only add allowedDevOrigins if REPLIT_DOMAINS exists (for Replit development)
+  ...(process.env.REPLIT_DOMAINS && {
+    allowedDevOrigins: [process.env.REPLIT_DOMAINS.split(",")[0]],
+  }),
 };
 
-module.exports = nextConfig;
+export default nextConfig;
