@@ -12,10 +12,10 @@ export default async function handler(req, res) {
         break;
 
       case 'POST':
-        const { name, grid_size, background_image, category, image_ids } = req.body;
+        const { name, grid_size, background_image, category: gameCategory, image_ids } = req.body;
         
         // Validate required fields
-        if (!name || !grid_size || !category || !image_ids) {
+        if (!name || !grid_size || !gameCategory || !image_ids) {
           return res.status(400).json({ error: 'Missing required fields' });
         }
 
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
           name,
           grid_size,
           background_image,
-          category
+          category: gameCategory
         });
 
         // Add images to game

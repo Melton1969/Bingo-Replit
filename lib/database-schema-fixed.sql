@@ -1,4 +1,4 @@
--- Bingo Web App Database Schema
+-- Bingo Web App Database Schema - FIXED VERSION
 -- Execute this SQL in your Supabase SQL editor
 
 -- Folders table (mirrors storage bucket structure)
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS folders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(255) NOT NULL,
   parent_id UUID REFERENCES folders(id) ON DELETE CASCADE,
-  path TEXT NOT NULL UNIQUE,
+  path TEXT NOT NULL UNIQUE, -- Added UNIQUE constraint for ON CONFLICT
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS images (
   folder_id UUID REFERENCES folders(id) ON DELETE CASCADE,
   name VARCHAR(255) NOT NULL,
   url TEXT NOT NULL,
-  storage_path TEXT NOT NULL UNIQUE,
+  storage_path TEXT NOT NULL UNIQUE, -- Added UNIQUE constraint
   created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -52,11 +52,13 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION set_short_id()
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.short_id := generate_short_id(6);
-  -- Ensure uniqueness
-  WHILE EXISTS (SELECT 1 FROM games WHERE short_id = NEW.short_id) LOOP
+  IF NEW.short_id IS NULL THEN
     NEW.short_id := generate_short_id(6);
-  END LOOP;
+    -- Ensure uniqueness
+    WHILE EXISTS (SELECT 1 FROM games WHERE short_id = NEW.short_id) LOOP
+      NEW.short_id := generate_short_id(6);
+    END LOOP;
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -79,7 +81,7 @@ CREATE TABLE IF NOT EXISTS game_images (
 -- Background images table
 CREATE TABLE IF NOT EXISTS background_images (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name VARCHAR(255) NOT NULL UNIQUE,
+  name VARCHAR(255) NOT NULL UNIQUE, -- Added UNIQUE constraint
   url TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT NOW()
 );
@@ -143,12 +145,6 @@ CREATE POLICY "Allow public read access on games" ON games FOR SELECT USING (tru
 CREATE POLICY "Allow public read access on game_images" ON game_images FOR SELECT USING (true);
 CREATE POLICY "Allow public read access on background_images" ON background_images FOR SELECT USING (true);
 
--- For admin operations, you might want to add insert/update/delete policies
--- CREATE POLICY "Allow admin operations on folders" ON folders FOR ALL USING (auth.role() = 'admin');
--- CREATE POLICY "Allow admin operations on images" ON images FOR ALL USING (auth.role() = 'admin');
--- CREATE POLICY "Allow admin operations on games" ON games FOR ALL USING (auth.role() = 'admin');
--- CREATE POLICY "Allow admin operations on game_images" ON game_images FOR ALL USING (auth.role() = 'admin');
-
 -- For now, allow all operations (remove in production)
 CREATE POLICY "Allow all operations on folders" ON folders FOR ALL USING (true);
 CREATE POLICY "Allow all operations on images" ON images FOR ALL USING (true);
@@ -156,10 +152,11 @@ CREATE POLICY "Allow all operations on games" ON games FOR ALL USING (true);
 CREATE POLICY "Allow all operations on game_images" ON game_images FOR ALL USING (true);
 CREATE POLICY "Allow all operations on background_images" ON background_images FOR ALL USING (true);
 
--- Create storage bucket for images (run this in Supabase Dashboard > Storage)
--- INSERT INTO storage.buckets (id, name, public) VALUES ('bingo-images', 'bingo-images', true);
+-- Storage bucket creation (run this separately in Supabase Dashboard > Storage)
+-- CREATE BUCKET IF NOT EXISTS 'bingo-images' WITH (public = true);
 
--- Create storage policy for public access to images
+-- Create storage policies for public access to images
+-- Note: Run these in the Supabase Dashboard > Storage > Policies section
 -- CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'bingo-images');
 -- CREATE POLICY "Public Upload" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'bingo-images');
 -- CREATE POLICY "Public Update" ON storage.objects FOR UPDATE USING (bucket_id = 'bingo-images');

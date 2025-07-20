@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { 
   FolderPlus, 
   Upload, 
@@ -32,9 +33,9 @@ const FolderManagementModal = ({
     if (isOpen && folder) {
       loadImages();
     }
-  }, [isOpen, folder]);
+  }, [isOpen, folder, loadImages]);
 
-  const loadImages = async () => {
+  const loadImages = useCallback(async () => {
     if (!folder) return;
     
     setLoading(true);
@@ -49,7 +50,7 @@ const FolderManagementModal = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [folder]);
 
   const handleFileSelect = (event) => {
     const files = Array.from(event.target.files);
@@ -364,9 +365,11 @@ const FolderManagementModal = ({
 
                   {/* Image */}
                   <div className="aspect-square overflow-hidden rounded-t-lg">
-                    <img
+                    <Image
                       src={image.url}
                       alt={image.name}
+                      width={200}
+                      height={200}
                       className="w-full h-full object-cover"
                     />
                   </div>

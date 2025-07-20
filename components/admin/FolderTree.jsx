@@ -132,7 +132,7 @@ const FolderTree = ({
             
             {imageCount > 0 && (
               <div className="flex items-center space-x-1 text-xs text-gray-500 flex-shrink-0">
-                <Image className="w-3 h-3" />
+                <Image className="w-3 h-3" alt="" />
                 <span>({imageCount})</span>
               </div>
             )}

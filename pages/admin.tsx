@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { Copy, Edit, Trash2, ExternalLink, Settings } from 'lucide-react';
 import Button from '../components/shared/Button';
 import FolderTree from '../components/admin/FolderTree';
@@ -39,11 +40,14 @@ const AdminPage = () => {
   };
 
   const getGridSize = (gridSize) => {
-    const [cols, rows] = gridSize.split('x').map(Number);
+    if (!gridSize) return { cols: 3, rows: 3 };
+    const parts = gridSize.split('x');
+    const cols = Number(parts[0]);
+    const rows = Number(parts[1]);
     return { cols, rows };
   };
 
-  const categories = [...new Set(games.map(game => game.category))];
+  const categories = games ? [...new Set(games.map(game => game.category))] : [];
 
   // Game creation handlers
   const handleFolderSelect = (folder) => {
@@ -268,9 +272,11 @@ const AdminPage = () => {
                   {selectedGame.background_image && (
                     <div>
                       <h4 className="font-medium text-sm text-gray-600 mb-2">Background</h4>
-                      <img 
+                      <Image 
                         src={selectedGame.background_image} 
                         alt="Background" 
+                        width={400}
+                        height={128}
                         className="w-full h-32 object-cover rounded-lg"
                       />
                     </div>

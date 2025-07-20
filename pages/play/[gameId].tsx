@@ -119,7 +119,7 @@ const PlayerPage = () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Game Not Found</h1>
           <p className="text-gray-600 mb-4">
-            The game you're looking for doesn't exist or has been removed.
+            The game you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
           <button
             onClick={() => router.push('/')}
@@ -198,6 +198,7 @@ const PlayerPage = () => {
                 image={activeItem}
                 className="w-24"
                 showLabel={false}
+                onDoubleClick={() => {}}
               />
             </div>
           )}

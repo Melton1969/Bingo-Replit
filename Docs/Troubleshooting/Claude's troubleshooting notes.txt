@@ -1,0 +1,5 @@
+Great! The agent found the issue. The problem is indeed in the ImageGrid
+  component where there's a circular dependency between useEffect and
+  loadImages. Let me fix this:
+
+● Read(components/admin/ImageGrid.jsx)

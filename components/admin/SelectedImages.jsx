@@ -1,4 +1,5 @@
 import { X, Trash2 } from 'lucide-react';
+import Image from 'next/image';
 import Button from '../shared/Button';
 
 const SelectedImages = ({ 
@@ -70,9 +71,11 @@ const SelectedImages = ({
                 className="relative group bg-white rounded-lg shadow-sm overflow-hidden"
               >
                 <div className="aspect-square overflow-hidden">
-                  <img
+                  <Image
                     src={image.url}
                     alt={image.name}
+                    width={200}
+                    height={200}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />

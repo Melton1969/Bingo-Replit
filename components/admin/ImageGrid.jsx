@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { Check, X, Image as ImageIcon } from 'lucide-react';
 
 const ImageGrid = ({ 
@@ -12,15 +13,7 @@ const ImageGrid = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (folderId) {
-      loadImages();
-    } else {
-      setImages([]);
-    }
-  }, [folderId]);
-
-  const loadImages = async () => {
+  const loadImages = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -39,7 +32,15 @@ const ImageGrid = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [folderId]);
+
+  useEffect(() => {
+    if (folderId) {
+      loadImages();
+    } else {
+      setImages([]);
+    }
+  }, [folderId, loadImages]);
 
   const handleImageClick = (image) => {
     if (selectionMode && onImageToggle) {
@@ -127,9 +128,11 @@ const ImageGrid = ({
                 <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
                   {/* Image */}
                   <div className="aspect-square overflow-hidden">
-                    <img
+                    <Image
                       src={image.url}
                       alt={image.name}
+                      width={200}
+                      height={200}
                       className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                       loading="lazy"
                     />

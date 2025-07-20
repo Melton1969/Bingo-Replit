@@ -1,5 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import Image from 'next/image';
 
 const DraggableImage = ({ 
   id, 
@@ -42,9 +43,11 @@ const DraggableImage = ({
       {...props}
     >
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-        <img 
+        <Image 
           src={image.url} 
           alt={image.name}
+          width={200}
+          height={96}
           className="w-full h-24 object-cover"
           draggable={false}
         />

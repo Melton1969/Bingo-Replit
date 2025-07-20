@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Modal from '../shared/Modal';
 import Button from '../shared/Button';
 
@@ -209,9 +210,11 @@ const SaveGameModal = ({
           
           {selectedBackground && (
             <div className="mt-3">
-              <img
+              <Image
                 src={selectedBackground.url}
                 alt={selectedBackground.name}
+                width={400}
+                height={128}
                 className="w-full h-32 object-cover rounded-lg"
               />
             </div>

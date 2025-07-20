@@ -126,7 +126,7 @@ const TestPage = () => {
         
         <div className="text-center mt-8">
           <p className="text-gray-600">
-            <strong>Note:</strong> You'll need to configure your Supabase credentials in .env.local
+            <strong>Note:</strong> You&apos;ll need to configure your Supabase credentials in .env.local
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Run the database schema from /lib/database-schema.sql in your Supabase SQL editor first
